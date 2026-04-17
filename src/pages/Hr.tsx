@@ -52,7 +52,6 @@ import {
   HardHat,
   FileCheck,
   Activity,
-  Flame,
   Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -61,7 +60,6 @@ import { cn } from "@/lib/utils";
 
 type AlertSeverity = "critical" | "warning" | "info" | "ok";
 type TrainingStatus = "completed" | "in-progress" | "overdue" | "not-started";
-type IncidentSeverity = "high" | "medium" | "low";
 
 // ── Data ───────────────────────────────────────────────────────────────────────
 

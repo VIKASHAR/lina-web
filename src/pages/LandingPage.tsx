@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function LandingPage() {
-  const navigate = useNavigate();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [launched, setLaunched] = useState(false);
   const [taglineIndex, setTaglineIndex] = useState(0);

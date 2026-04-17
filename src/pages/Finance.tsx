@@ -42,17 +42,12 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
   DollarSign,
-  TrendingDown,
   RefreshCcw,
   BarChart3,
   CheckCircle2,
   Clock,
-  AlertTriangle,
   ChevronRight,
-  Cpu,
   FileText,
-  Building2,
-  Layers,
   ArrowUpRight,
   ArrowDownRight,
 } from "lucide-react";
@@ -61,7 +56,7 @@ import { cn } from "@/lib/utils";
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 type CloseStatus = "Completed" | "In Progress" | "Pending" | "Overdue";
-type MigrationStatus = "Complete" | "In Progress" | "Planned" | "Blocked";
+
 
 // ── Static data ────────────────────────────────────────────────────────────────
 
@@ -103,38 +98,6 @@ const ROI_ROWS = [
   },
 ] as const;
 
-const MIGRATION_TRACKS = [
-  {
-    label: "Core ERP Modules",
-    pct: 78,
-    status: "In Progress" as MigrationStatus,
-    detail: "FI/CO · MM · SD · PP",
-  },
-  {
-    label: "Regional Operations",
-    pct: 52,
-    status: "In Progress" as MigrationStatus,
-    detail: "APAC · EMEA · Americas",
-  },
-  {
-    label: "Custom Programs (300+)",
-    pct: 41,
-    status: "In Progress" as MigrationStatus,
-    detail: "AI-assisted migration tooling",
-  },
-  {
-    label: "SAP Ariba Integration",
-    pct: 90,
-    status: "In Progress" as MigrationStatus,
-    detail: "Procurement · Sourcing",
-  },
-  {
-    label: "SAP BTP Extensions",
-    pct: 24,
-    status: "Planned" as MigrationStatus,
-    detail: "Cloud-native extensions",
-  },
-] as const;
 
 type CloseRecord = {
   period: string;
@@ -258,19 +221,6 @@ function closeStatusBadge(status: CloseStatus) {
   );
 }
 
-function migrationColor(pct: number) {
-  if (pct >= 75) return "bg-chart-2";
-  if (pct >= 45) return "bg-accent";
-  if (pct >= 25) return "bg-chart-3";
-  return "bg-muted-foreground/40";
-}
-
-function migrationTextColor(pct: number) {
-  if (pct >= 75) return "text-chart-2";
-  if (pct >= 45) return "text-accent";
-  if (pct >= 25) return "text-chart-3";
-  return "text-muted-foreground";
-}
 
 // ── Main Component ─────────────────────────────────────────────────────────────
 

@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard, Truck, GitBranch, TrendingUp, Radio,
+  LayoutDashboard, Truck, GitBranch, TrendingUp,
   AlertTriangle, FileText, Users, CheckCircle2, Clock,
   Thermometer, Zap, ArrowRight, ChevronRight, MapPin,
   AlertCircle, BarChart3, Navigation, Package, Brain,
@@ -823,7 +823,7 @@ function TelemetryConnectView({ scenario, onComplete, onBack }: {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    let current = 0;
+
     function animateCustomer(idx: number) {
       if (idx >= customers.length) { setAllDone(true); return; }
       setActiveIdx(idx);
@@ -917,7 +917,7 @@ function AgentWorkingView({ scenario, onComplete, onBack, agentsDone }: {
   const [currentStep, setCurrentStep] = useState(agentsDone ? steps.length - 1 : 0);
   const [completedSteps, setCompletedSteps] = useState<number[]>(agentsDone ? allIndices : []);
   const [stepProgress, setStepProgress] = useState(agentsDone ? 100 : 0);
-  const [logs, setLogs] = useState<string[]>(agentsDone ? buildAllLogs(scenario, steps) : []);
+  const [logs, setLogs] = useState<string[]>(agentsDone ? buildAllLogs(scenario) : []);
   const [done, setDone] = useState(agentsDone);
   const logRef = useRef<HTMLDivElement>(null);
 
@@ -1053,7 +1053,7 @@ function AgentWorkingView({ scenario, onComplete, onBack, agentsDone }: {
   );
 }
 
-function buildAllLogs(scenario: Scenario, steps: AgentStep[]): string[] {
+function buildAllLogs(scenario: Scenario): string[] {
   return [
     "[Telemetry] Connecting to IoT hub…",
     "[Telemetry] Tank sensors online · 3/3 customers",
@@ -1084,7 +1084,7 @@ function TerminalIcon({ className }: { className?: string }) {
 }
 
 // ─── Customer Card ────────────────────────────────────────────────────────────
-function CustomerCard({ c, rank }: { c: Customer; rank: number }) {
+function CustomerCard({ c }: { c: Customer }) {
   const urgency = c.hoursToEmpty < 4 ? "IMMINENT" : c.hoursToEmpty < 12 ? "URGENT" : "STABLE";
   const deliveryPct = Math.round((c.deliveryRequired / 100) * 100);
   const creditBg = c.creditScore >= 750 ? "bg-emerald-100 text-emerald-700" : c.creditScore >= 650 ? "bg-blue-100 text-blue-700" : "bg-orange-100 text-orange-700";
@@ -1300,7 +1300,7 @@ function SimulationView({ scenario, onDecision, onBack }: {
           <Thermometer className="h-4 w-4 text-primary" /> Customer Telemetry — Priority by Time-to-Empty
         </h3>
         <div className="grid grid-cols-3 gap-4">
-          {customers.map((c, i) => <CustomerCard key={c.id} c={c} rank={i + 1} />)}
+          {customers.map((c) => <CustomerCard key={c.id} c={c} />)}
         </div>
       </div>
       <div className="grid grid-cols-4 gap-3">

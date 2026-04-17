@@ -50,10 +50,6 @@ import {
   Cpu,
   Lock,
   Network,
-  ServerCrash,
-  TicketCheck,
-  TrendingDown,
-  Wifi,
   Bug,
   FileSearch,
 } from "lucide-react";

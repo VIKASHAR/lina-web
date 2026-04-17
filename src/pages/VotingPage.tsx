@@ -3,7 +3,7 @@ import {
   CheckCircle2, RotateCcw, Rocket, Wifi,
   AlertTriangle, TrendingUp, Navigation, Users,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+
 
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
 // 🔧 Change this to your main app's deployed URL

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Mic, MicOff, MessageSquare, Loader2, X, Command } from 'lucide-react';
+import { MicOff, Loader2, X, Command } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- Constants & Types ---
@@ -138,24 +138,7 @@ export const LenaAssistant: React.FC = () => {
       });
 
       const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error?.message || `API Error: ${response.status}`);
-      }
-
-      if (!data.choices || data.choices.length === 0) {
-        throw new Error("No response choices returned from Groq.");
-      }
-
-      let content = data.choices[0].message.content;
-      // Handle cases where the model might wrap JSON in code blocks
-      if (content.includes('```json')) {
-        content = content.split('```json')[1].split('```')[0].trim();
-      } else if (content.includes('```')) {
-        content = content.split('```')[1].split('```')[0].trim();
-      }
-
-      const action: Action = JSON.parse(content);
+      const action: Action = JSON.parse(data.choices[0].message.content);
 
       handleAction(action);
     } catch (err) {
@@ -214,16 +197,6 @@ export const LenaAssistant: React.FC = () => {
         })
       });
       const data = await response.json();
-      
-      if (!response.ok) {
-        console.error("Groq Summary Error:", data.error?.message || `API Error: ${response.status}`);
-        return "I encountered an issue while trying to summarize the page.";
-      }
-
-      if (!data.choices || data.choices.length === 0) {
-        return "I couldn't generate a summary at this time.";
-      }
-
       return data.choices[0].message.content;
     } catch (err) {
       return "I was unable to summarize the page content at this time.";

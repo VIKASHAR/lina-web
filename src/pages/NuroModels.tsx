@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 
 /* ───────────────────────── TYPES ───────────────────────── */
 
@@ -72,28 +72,28 @@ const MODALITY_COLORS: Record<Modality, string> = {
 
 /* ───────────────────────── ICONS (inline SVG) ───────────────────────── */
 
-function IconSearch(): JSX.Element {
+function IconSearch(): React.JSX.Element {
   return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>;
 }
-function IconBrain(): JSX.Element {
+function IconBrain(): React.JSX.Element {
   return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-4 4c0 1.5.8 2.8 2 3.5V17a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-2.5c1.2-.7 2-2 2-3.5a4 4 0 0 0-4-4V6a4 4 0 0 0-4-4z" /><path d="M12 2v20" /><path d="M8 7h8" /><path d="M8 12h8" /></svg>;
 }
-function IconFlask(): JSX.Element {
+function IconFlask(): React.JSX.Element {
   return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 3h6" /><path d="M10 3v7.4a2 2 0 0 1-.5 1.3L4 18.6a1 1 0 0 0 .7 1.7h14.6a1 1 0 0 0 .7-1.7l-5.5-6.9a2 2 0 0 1-.5-1.3V3" /></svg>;
 }
-function IconCpu(): JSX.Element {
+function IconCpu(): React.JSX.Element {
   return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" /><rect x="9" y="9" width="6" height="6" /><path d="M15 2v2" /><path d="M15 20v2" /><path d="M2 15h2" /><path d="M2 9h2" /><path d="M20 15h2" /><path d="M20 9h2" /><path d="M9 2v2" /><path d="M9 20v2" /></svg>;
 }
-function IconExternalLink(): JSX.Element {
+function IconExternalLink(): React.JSX.Element {
   return <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>;
 }
-function IconNetwork(): JSX.Element {
+function IconNetwork(): React.JSX.Element {
   return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="3" /><circle cx="5" cy="19" r="3" /><circle cx="19" cy="19" r="3" /><path d="M12 8v3" /><path d="M6.5 17L10 13" /><path d="M17.5 17L14 13" /><circle cx="12" cy="13" r="2" /></svg>;
 }
-function IconChevron(): JSX.Element {
+function IconChevron(): React.JSX.Element {
   return <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>;
 }
-function IconRegistry(): JSX.Element {
+function IconRegistry(): React.JSX.Element {
   return <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" /><path d="M8 21h8" /><path d="M12 17v4" /></svg>;
 }
 
@@ -105,7 +105,7 @@ interface BadgeProps {
   textColor?: string;
 }
 
-function Badge({ label, color, textColor }: BadgeProps): JSX.Element {
+function Badge({ label, color, textColor }: BadgeProps): React.JSX.Element {
   return (
     <span style={{
       display: "inline-block",
@@ -128,7 +128,7 @@ interface ModelCardProps {
   model: Model;
 }
 
-function ModelCard({ model }: ModelCardProps): JSX.Element {
+function ModelCard({ model }: ModelCardProps): React.JSX.Element {
   const tc: TypeColor = TYPE_COLORS[model.type] || { bg: "", fg: "" };
   return (
     <div style={{
@@ -181,10 +181,10 @@ interface SidebarSectionProps {
   items: string[];
   counts: Record<string, number>;
   activeFilters: string[];
-  onToggle: (item: string) => void;
+  onToggle: (item: any) => void;
 }
 
-function SidebarSection({ title, items, counts, activeFilters, onToggle }: SidebarSectionProps): JSX.Element {
+function SidebarSection({ title, items, counts, activeFilters, onToggle }: SidebarSectionProps): React.JSX.Element {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   return (
     <div style={{ marginBottom: "16px" }}>
@@ -235,14 +235,14 @@ function SidebarSection({ title, items, counts, activeFilters, onToggle }: Sideb
 }
 
 interface HeroCardProps {
-  icon: JSX.Element;
+  icon: React.JSX.Element;
   title: string;
   desc: string;
   onClick: () => void;
   highlight?: boolean;
 }
 
-function HeroCard({ icon, title, desc, onClick, highlight }: HeroCardProps): JSX.Element {
+function HeroCard({ icon, title, desc, onClick, highlight }: HeroCardProps): React.JSX.Element {
   return (
     <div
       onClick={onClick}
@@ -274,7 +274,7 @@ interface ModelSectionProps {
   onToggleShowAll: () => void;
 }
 
-function ModelSection({ title, subtitle, models, showAll, onToggleShowAll }: ModelSectionProps): JSX.Element {
+function ModelSection({ title, subtitle, models, showAll, onToggleShowAll }: ModelSectionProps): React.JSX.Element {
   const displayed = showAll ? models : models.slice(0, 4);
   return (
     <div style={{ marginBottom: "36px" }}>
@@ -305,7 +305,7 @@ function ModelSection({ title, subtitle, models, showAll, onToggleShowAll }: Mod
 
 /* ───────────────────────── MAIN APP ───────────────────────── */
 
-export default function NexusModels(): JSX.Element {
+export default function NexusModels(): React.JSX.Element {
   const [search, setSearch] = useState<string>("");
   const [modalityFilters, setModalityFilters] = useState<Modality[]>([]);
   const [taskFilters, setTaskFilters] = useState<Task[]>([]);
@@ -313,7 +313,7 @@ export default function NexusModels(): JSX.Element {
   const [showAgent, setShowAgent] = useState<boolean>(false);
   const [showTrainable, setShowTrainable] = useState<boolean>(false);
 
-  const toggle = <T extends string>(arr: T[], setArr: React.Dispatch<React.SetStateAction<T[]>>) => (item: T): void => {
+  const toggle = <T extends string>(_arr: T[], setArr: React.Dispatch<React.SetStateAction<T[]>>) => (item: T): void => {
     setArr(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]);
   };
 

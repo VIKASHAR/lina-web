@@ -4,12 +4,12 @@
 
 import { useState } from "react";
 import {
-  Database, Search, Upload, Lock, FileText, FolderOpen,
-  Clock, Tag, Shield, ChevronRight, Plus, Filter,
-  BookOpen, Archive, Zap, CheckCircle2, AlertCircle,
-  Brain, Globe, Layers, HardDrive, Cpu, Eye, Download,
-  MoreVertical, Star, Calendar, TrendingUp, Users,
-  BarChart3, Workflow, Package,
+  Search, Upload, Lock, FileText, FolderOpen,
+  Clock, Shield, ChevronRight, Plus, Filter,
+  BookOpen, Zap, CheckCircle2,
+  Brain, Layers, HardDrive, Cpu, Eye, Download,
+  MoreVertical, Star, TrendingUp,
+  BarChart3, Workflow,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

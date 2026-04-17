@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 
 /* ───────────────────────── TYPES ───────────────────────── */
 
@@ -47,13 +47,12 @@ const STATUSES: PipelineStatus[] = ["Running", "Failed", "Completed", "Draft"];
 
 /* ───────────────────────── ICONS (inline SVG) ───────────────────────── */
 
-function IconSearch(): JSX.Element { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>; }
-function IconNetwork(): JSX.Element { return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="3" /><circle cx="5" cy="19" r="3" /><circle cx="19" cy="19" r="3" /><path d="M12 8v3" /><path d="M6.5 17L10 13" /><path d="M17.5 17L14 13" /><circle cx="12" cy="13" r="2" /></svg>; }
-function IconChevron(): JSX.Element { return <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>; }
-function IconActivity(): JSX.Element { return <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>; }
-function IconGitMerge(): JSX.Element { return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="18" r="3" /><circle cx="6" cy="6" r="3" /><path d="M6 21V9a9 9 0 0 0 9 9" /></svg>; }
-function IconPlay(): JSX.Element { return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3" /></svg>; }
-function IconSettings(): JSX.Element { return <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>; }
+function IconSearch(): React.JSX.Element { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>; }
+function IconChevron(): React.JSX.Element { return <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>; }
+function IconActivity(): React.JSX.Element { return <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>; }
+function IconGitMerge(): React.JSX.Element { return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="18" r="3" /><circle cx="6" cy="6" r="3" /><path d="M6 21V9a9 9 0 0 0 9 9" /></svg>; }
+function IconPlay(): React.JSX.Element { return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3" /></svg>; }
+function IconSettings(): React.JSX.Element { return <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>; }
 
 /* ───────────────────────── COMPONENTS ───────────────────────── */
 
@@ -61,10 +60,10 @@ interface SidebarSectionProps {
   title: string;
   items: string[];
   activeFilters: string[];
-  onToggle: (item: string) => void;
+  onToggle: (item: any) => void;
 }
 
-function SidebarSection({ title, items, activeFilters, onToggle }: SidebarSectionProps): JSX.Element {
+function SidebarSection({ title, items, activeFilters, onToggle }: SidebarSectionProps): React.JSX.Element {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   return (
     <div style={{ marginBottom: "16px" }}>
@@ -116,7 +115,7 @@ interface PipelineCardProps {
   pipeline: Pipeline;
 }
 
-function PipelineCard({ pipeline }: PipelineCardProps): JSX.Element {
+function PipelineCard({ pipeline }: PipelineCardProps): React.JSX.Element {
   const statusColors: Record<PipelineStatus, StatusColor> = {
     "Running": { bg: "#E8F5E9", fg: "#2D8659" },
     "Failed": { bg: "#FFEBEE", fg: "#CC3340" },
@@ -184,7 +183,7 @@ interface WorkflowRowProps {
   workflow: Workflow;
 }
 
-function WorkflowRow({ workflow }: WorkflowRowProps): JSX.Element {
+function WorkflowRow({ workflow }: WorkflowRowProps): React.JSX.Element {
   return (
     <div style={{
       display: "flex",
@@ -209,7 +208,7 @@ function WorkflowRow({ workflow }: WorkflowRowProps): JSX.Element {
 
 /* ───────────────────────── GRAPHS ───────────────────────── */
 
-function CollaborationGraph(): JSX.Element {
+function CollaborationGraph(): React.JSX.Element {
   return (
     <div style={{
       width: "100%", height: "260px", background: "var(--clr-background)",
@@ -264,12 +263,12 @@ function CollaborationGraph(): JSX.Element {
 
 /* ───────────────────────── MAIN APP ───────────────────────── */
 
-export default function NexusForge(): JSX.Element {
+export default function NexusForge(): React.JSX.Element {
   const [search, setSearch] = useState<string>("");
   const [categoryFilters, setCategoryFilters] = useState<PipelineType[]>([]);
   const [statusFilters, setStatusFilters] = useState<PipelineStatus[]>([]);
 
-  const toggle = <T extends string>(arr: T[], setArr: React.Dispatch<React.SetStateAction<T[]>>) => (item: T): void => {
+  const toggle = <T extends string>(_arr: T[], setArr: React.Dispatch<React.SetStateAction<T[]>>) => (item: T): void => {
     setArr(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]);
   };
 

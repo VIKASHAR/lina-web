@@ -1,6 +1,5 @@
 import { Link, Outlet, useLocation } from "react-router-dom"
 
-import { SidebarProvider, SidebarInset } from "./ui/sidebar"
 import { Separator } from "./ui/separator"
 import { ThemeToggle } from "./ThemeToggle"
 import { LogoutButton } from "./logout-button"

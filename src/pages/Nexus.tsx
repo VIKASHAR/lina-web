@@ -5,9 +5,9 @@
 import { useState, useEffect } from "react";
 import {
   Brain, Truck, Factory, DollarSign, Shield, Lock, TrendingUp,
-  CheckCircle2, AlertTriangle, Clock, Activity, Zap, Database,
-  Wifi, BarChart3, Users, Play, RefreshCw, Download, FileText,
-  PauseCircle, ChevronRight, Circle, ArrowUpRight, Cpu,
+  CheckCircle2, Clock, Activity, Zap,
+  Users, RefreshCw, Download, FileText,
+  PauseCircle, ChevronRight, Cpu,
   AlertCircle, XCircle, RotateCcw, Globe, Radio, Eye,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
