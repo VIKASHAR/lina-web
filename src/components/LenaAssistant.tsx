@@ -59,8 +59,13 @@ export const LenaAssistant: React.FC = () => {
       synthesisRef.current = femaleVoice || null;
     };
 
-    window.speechSynthesis.onvoiceschanged = loadVoices;
     loadVoices();
+  }, []);
+
+  const stopAll = useCallback(() => {
+    window.speechSynthesis.cancel();
+    pipelineTimersRef.current.forEach(clearTimeout);
+    pipelineTimersRef.current = [];
   }, []);
 
   const speak = useCallback((text: string) => {
@@ -68,27 +73,30 @@ export const LenaAssistant: React.FC = () => {
     
     // Explicit Stop support
     if (STOP_WORDS.some(word => text.toLowerCase().includes(word))) {
-      window.speechSynthesis.cancel();
-      pipelineTimersRef.current.forEach(clearTimeout);
-      pipelineTimersRef.current = [];
+      stopAll();
       setLenaResponse("Stopped.");
       return;
     }
 
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    if (synthesisRef.current) {
-      utterance.voice = synthesisRef.current;
-    }
-    utterance.volume = 1;
-    utterance.pitch = 1.0; 
-    utterance.rate = 1.0;
-    window.speechSynthesis.speak(utterance);
-    setLenaResponse(text);
-  }, []);
+    stopAll();
+    
+    // Settling delay (50ms) to ensure previous cancel() is fully respected by the device
+    setTimeout(() => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      if (synthesisRef.current) {
+        utterance.voice = synthesisRef.current;
+      }
+      utterance.volume = 1;
+      utterance.pitch = 1.0; 
+      utterance.rate = 1.0;
+      window.speechSynthesis.speak(utterance);
+      setLenaResponse(text);
+    }, 50);
+  }, [stopAll]);
 
   // --- Command Processing ---
   const processCommand = async (text: string) => {
+    if (isProcessing) return; // Concurrency Guard: Prevents ghost/overlapping calls
     setIsProcessing(true);
     setTranscript(text);
 
@@ -274,9 +282,7 @@ export const LenaAssistant: React.FC = () => {
 
         // 1. High Priority STOP Check
         if (STOP_WORDS.some(word => lowerTranscript === word || lowerTranscript.endsWith(" " + word))) {
-          window.speechSynthesis.cancel();
-          pipelineTimersRef.current.forEach(clearTimeout);
-          pipelineTimersRef.current = [];
+          stopAll();
           setLenaResponse("Standing by.");
           return;
         }
@@ -376,7 +382,7 @@ export const LenaAssistant: React.FC = () => {
       window.removeEventListener('keydown', handleFirstInteraction);
       if (watchdogTimerRef.current) clearTimeout(watchdogTimerRef.current);
     };
-  }, [isVisible, navigate, speak]);
+  }, [isVisible, navigate, speak, stopAll]);
 
   // --- Pipeline Voice Narration ---
   useEffect(() => {
