@@ -40,9 +40,9 @@ export const LenaAssistant: React.FC = () => {
       const femaleVoice = voices.find(v => {
         const name = v.name;
         return (
-          name.includes('Female') || 
-          name.includes('Google US English') || 
-          name.includes('Samantha') || 
+          name.includes('Female') ||
+          name.includes('Google US English') ||
+          name.includes('Samantha') ||
           name.includes('Victoria') ||
           name.includes('Aria') ||
           name.includes('Zira') ||
@@ -67,7 +67,7 @@ export const LenaAssistant: React.FC = () => {
     if (synthesisRef.current) {
       utterance.voice = synthesisRef.current;
     }
-    utterance.pitch = 1.0; 
+    utterance.pitch = 1.0;
     utterance.rate = 1.0;
     window.speechSynthesis.speak(utterance);
     setLenaResponse(text);
@@ -259,7 +259,7 @@ export const LenaAssistant: React.FC = () => {
       recognition.onerror = (event: any) => {
         // Silently handle 'aborted' as it's often a harmless browser behavior
         if (event.error === 'aborted') return;
-        
+
         console.error("Recognition Error:", event.error);
         if (event.error === 'not-allowed') {
           setError("Microphone access denied.");
@@ -320,9 +320,9 @@ export const LenaAssistant: React.FC = () => {
     // Agent durations (ms): Telemetry=6000, Demand=5000, Pricing=7000,
     // Plant=5000, Route=8000, Risk=6000, Orchestrator=5000
     const SCRIPT = [
-      { delay: 0,     text: "Initializing LENA Agent Pipeline. All systems online." },
-      { delay: 800,   text: "Telemetry Agent activated — Gathered tank levels and analyzed." },
-      { delay: 6000,  text: "Demand and Allocation Agent engaged — forecasting supply needs." },
+      { delay: 0, text: "Initializing LENA Agent Pipeline. All systems online." },
+      { delay: 800, text: "Telemetry Agent activated — Gathered tank levels and analyzed." },
+      { delay: 6000, text: "Demand and Allocation Agent engaged — forecasting supply needs." },
       { delay: 11000, text: "Pricing Optimisation Agent online — calculating best fuel rates." },
       { delay: 18000, text: "Plant and Logistics Allocation Agent deployed — assigning efficient plant, tanker and driver sources." },
       { delay: 23000, text: "Route Optimisation Agent launched — finding fastest delivery path." },
@@ -335,9 +335,9 @@ export const LenaAssistant: React.FC = () => {
       // Clear any existing timers
       pipelineTimersRef.current.forEach(clearTimeout);
       pipelineTimersRef.current = [];
-      
+
       setIsVisible(true);
-      
+
       // Schedule the narration
       SCRIPT.forEach(({ delay, text }) => {
         const t = setTimeout(() => speak(text), delay);
