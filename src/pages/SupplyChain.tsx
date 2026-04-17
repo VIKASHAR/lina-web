@@ -921,6 +921,13 @@ function AgentWorkingView({ scenario, onComplete, onBack, agentsDone }: {
   const [done, setDone] = useState(agentsDone);
   const logRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    // Trigger Lena voice narration when agent pipeline starts
+    if (!agentsDone) {
+      window.dispatchEvent(new CustomEvent('lena-pipeline-start'));
+    }
+  }, [agentsDone]);
+
   const logMessages: string[][] = [
     ["[Telemetry] Connecting to IoT hub…", "[Telemetry] Tank sensors online · 3/3 customers", "[Telemetry] Alert: Customer at threshold"],
     ["[Demand] Computing usage curves…", "[Demand] 7-day demand forecast: " + scenario.expectedDemand7Days + " m³", "[Demand] Allocations balanced to truck capacity"],
