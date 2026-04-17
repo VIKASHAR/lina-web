@@ -1,37 +1,18 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
-// 🔧 Change this to your main app's deployed URL
-const MAIN_APP_URL = "http://localhost:5173"; // e.g. "https://your-main-app.onrender.com"
-const VOTE_URL = `${window.location.origin}/vote`;
-
-// ─── Constants ────────────────────────────────────────────────────────────────
+const MAIN_APP_URL = "https://lina-web-gamma.vercel.app"; 
 const STORAGE_KEY = "lena_votes";
 
-// ─── Design tokens extracted from LENA dashboard ─────────────────────────────
+// ─── Design tokens ─────────────────────────────────────────────────────────────
 const THEME = {
-  // backgrounds
-  bg: "#f5f6fa",           // main page background (light grey-white)
-  sidebar: "#ffffff",       // sidebar / header white
-  card: "#ffffff",          // card white
-  // text
-  textPrimary: "#1a2b4a",  // dark navy — headings, LENA wordmark
-  textSecondary: "#64748b", // slate — muted labels, breadcrumb
-  textMeta: "#94a3b8",      // lighter slate — COO, helper text
-  // borders
-  border: "#e8ecf0",        // subtle dividers
-  // accent colours pulled from the 6 cards
-  blue: "#2d6fa6",          // Supply Chain / Manufacturing card link colour
-  blueLight: "#e8f1f8",     // Supply Chain icon bg
-  amber: "#d4900a",         // Finance card link colour
-  amberLight: "#fef3dc",    // Finance icon bg
-  red: "#c0392b",           // IT & Cybersecurity link colour
-  redLight: "#fde8e6",      // IT icon bg
-  teal: "#2d9e9e",          // HR link colour
-  // nav active
-  navActiveBg: "#eef4fb",
-  navActiveBorder: "#2d6fa6",
-  navActiveText: "#2d6fa6",
+  bg: "#f5f6fa",           
+  sidebar: "#ffffff",      
+  textPrimary: "#1a2b4a",  
+  textSecondary: "#64748b",
+  textMeta: "#94a3b8",     
+  border: "#e8ecf0",       
+  blue: "#2d6fa6",         
 };
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -54,7 +35,7 @@ function readVotes(): VoteState {
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
-export default function FeedToAgent() {
+export default function VotingPage() {
   const [winner, setWinner] = useState<ScenarioId | null>(null);
   const channelRef = useRef<BroadcastChannel | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -112,7 +93,6 @@ export default function FeedToAgent() {
           flexShrink: 0,
         }}
       >
-        {/* LENA wordmark */}
         <span
           style={{
             fontSize: "16px",
@@ -124,17 +104,7 @@ export default function FeedToAgent() {
         >
           LENA
         </span>
-
-        {/* Divider */}
-        <div
-          style={{
-            width: "1px",
-            height: "16px",
-            background: THEME.border,
-          }}
-        />
-
-        {/* Powered by IBM WatsonX */}
+        <div style={{ width: "1px", height: "16px", background: THEME.border }} />
         <span
           style={{
             fontSize: "10px",
@@ -159,17 +129,9 @@ export default function FeedToAgent() {
           borderBottom: `1px solid ${THEME.border}`,
         }}
       >
-        <span style={{ fontSize: "13px", color: THEME.textSecondary }}>
-          Core
-        </span>
+        <span style={{ fontSize: "13px", color: THEME.textSecondary }}>Core</span>
         <span style={{ fontSize: "13px", color: THEME.textMeta }}>/</span>
-        <span
-          style={{
-            fontSize: "13px",
-            fontWeight: 600,
-            color: THEME.textPrimary,
-          }}
-        >
+        <span style={{ fontSize: "13px", fontWeight: 600, color: THEME.textPrimary }}>
           Feed to Agent
         </span>
       </div>
@@ -200,63 +162,25 @@ export default function FeedToAgent() {
           }}
         >
           <PulseDot />
-          <span
-            style={{
-              fontSize: "11px",
-              fontWeight: 600,
-              color: "#1e7e45",
-              letterSpacing: "0.07em",
-              textTransform: "uppercase",
-            }}
-          >
+          <span style={{ fontSize: "11px", fontWeight: 600, color: "#1e7e45", letterSpacing: "0.07em", textTransform: "uppercase" }}>
             Voting Complete · Live Telemetry Active
           </span>
         </div>
 
         {/* Heading */}
-        <h1
-          style={{
-            fontSize: "34px",
-            fontWeight: 700,
-            color: THEME.textPrimary,
-            margin: 0,
-            lineHeight: 1.25,
-            letterSpacing: "-0.02em",
-          }}
-        >
-          Audience has voted.
-          <br />
-          Ready to run the agent.
+        <h1 style={{ fontSize: "34px", fontWeight: 700, color: THEME.textPrimary, margin: 0, lineHeight: 1.25, letterSpacing: "-0.02em" }}>
+          Audience has voted.<br />Ready to run the agent.
         </h1>
 
         {/* Sub-text */}
-        <p
-          style={{
-            fontSize: "16px",
-            color: THEME.textSecondary,
-            margin: 0,
-            lineHeight: 1.75,
-            maxWidth: "440px",
-            fontWeight: 400,
-          }}
-        >
-          Customer telemetry data is feeding to the agent.
-          <br />
-          Initiate the supply chain intelligence.
+        <p style={{ fontSize: "16px", color: THEME.textSecondary, margin: 0, lineHeight: 1.75, maxWidth: "440px", fontWeight: 400 }}>
+          Customer telemetry data is feeding to the agent.<br />Initiate the supply chain intelligence.
         </p>
 
         {/* Accent divider */}
-        <div
-          style={{
-            width: "48px",
-            height: "2px",
-            background: THEME.blue,
-            borderRadius: "2px",
-            opacity: 0.35,
-          }}
-        />
+        <div style={{ width: "48px", height: "2px", background: THEME.blue, borderRadius: "2px", opacity: 0.35 }} />
 
-        {/* CTA Button — functionality unchanged */}
+        {/* CTA Button */}
         <button
           onClick={handleFeed}
           style={{
@@ -271,45 +195,20 @@ export default function FeedToAgent() {
             fontWeight: 600,
             border: "none",
             cursor: "pointer",
-            transition: "background 0.15s, transform 0.1s, box-shadow 0.15s",
+            transition: "all 0.15s ease",
             boxShadow: "0 2px 12px rgba(45,111,166,0.22)",
-            letterSpacing: "0.01em",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "#245d8f";
-            e.currentTarget.style.boxShadow =
-              "0 4px 18px rgba(45,111,166,0.32)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = THEME.blue;
-            e.currentTarget.style.boxShadow =
-              "0 2px 12px rgba(45,111,166,0.22)";
-          }}
-          onMouseDown={(e) => {
-            e.currentTarget.style.transform = "scale(0.97)";
-          }}
-          onMouseUp={(e) => {
-            e.currentTarget.style.transform = "scale(1)";
           }}
         >
           <ArrowRightIcon />
           Feed to agent
         </button>
 
-        {/* Helper note */}
-        <p
-          style={{
-            fontSize: "12px",
-            color: THEME.textMeta,
-            margin: 0,
-            marginTop: "-8px",
-          }}
-        >
+        <p style={{ fontSize: "12px", color: THEME.textMeta, margin: 0, marginTop: "-8px" }}>
           Winning scenario will be passed as context to LENA
         </p>
       </div>
 
-      {/* ── Footer user strip (matches sidebar bottom) ── */}
+      {/* ── Footer ── */}
       <div
         style={{
           display: "flex",
@@ -320,44 +219,10 @@ export default function FeedToAgent() {
           background: THEME.sidebar,
         }}
       >
-        {/* Avatar */}
-        <div
-          style={{
-            width: "32px",
-            height: "32px",
-            borderRadius: "50%",
-            background: THEME.textSecondary,
-            color: "#fff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "13px",
-            fontWeight: 700,
-            flexShrink: 0,
-          }}
-        >
-          L
-        </div>
+        <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: THEME.textSecondary, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "13px", fontWeight: 700 }}>L</div>
         <div>
-          <p
-            style={{
-              margin: 0,
-              fontSize: "13px",
-              fontWeight: 600,
-              color: THEME.textPrimary,
-            }}
-          >
-            LENA User
-          </p>
-          <p
-            style={{
-              margin: 0,
-              fontSize: "11px",
-              color: THEME.textMeta,
-            }}
-          >
-            COO
-          </p>
+          <p style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: THEME.textPrimary }}>LENA User</p>
+          <p style={{ margin: 0, fontSize: "11px", color: THEME.textMeta }}>COO</p>
         </div>
       </div>
     </div>
@@ -367,64 +232,18 @@ export default function FeedToAgent() {
 // ─── Sub-components ───────────────────────────────────────────────────────────
 function PulseDot() {
   return (
-    <span
-      style={{
-        position: "relative",
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "8px",
-        height: "8px",
-      }}
-    >
-      <span
-        style={{
-          position: "absolute",
-          width: "8px",
-          height: "8px",
-          borderRadius: "50%",
-          background: "#1e7e45",
-          animation: "lena-pulse-ring 2s ease-out infinite",
-        }}
-      />
-      <span
-        style={{
-          width: "8px",
-          height: "8px",
-          borderRadius: "50%",
-          background: "#1e7e45",
-          position: "relative",
-          zIndex: 1,
-        }}
-      />
-      <style>{`
-        @keyframes lena-pulse-ring {
-          0%   { transform: scale(1);    opacity: 0.7; }
-          70%  { transform: scale(1.8);  opacity: 0;   }
-          100% { transform: scale(1.8);  opacity: 0;   }
-        }
-      `}</style>
+    <span style={{ position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center", width: "8px", height: "8px" }}>
+      <span style={{ position: "absolute", width: "8px", height: "8px", borderRadius: "50%", background: "#1e7e45", animation: "lena-pulse-ring 2s ease-out infinite" }} />
+      <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#1e7e45", position: "relative", zIndex: 1 }} />
+      <style>{`@keyframes lena-pulse-ring { 0% { transform: scale(1); opacity: 0.7; } 70% { transform: scale(1.8); opacity: 0; } 100% { transform: scale(1.8); opacity: 0; } }`}</style>
     </span>
   );
 }
 
 function ArrowRightIcon() {
   return (
-    <svg
-      width="15"
-      height="15"
-      viewBox="0 0 16 16"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ flexShrink: 0 }}
-    >
-      <path
-        d="M2 8H14M14 8L9.5 3.5M14 8L9.5 12.5"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2 8H14M14 8L9.5 3.5M14 8L9.5 12.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
