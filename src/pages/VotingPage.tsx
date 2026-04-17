@@ -7,7 +7,7 @@ import {
 
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
 // 🔧 Change this to your main app's deployed URL
-const MAIN_APP_URL = "https://lina-web-2.onrender.com"; // e.g. "https://your-main-app.onrender.com"
+const MAIN_APP_URL = "https://lina-web-gamma.vercel.app/"; // e.g. "https://your-main-app.onrender.com"
 const VOTE_URL = `${window.location.origin}/vote`;
 
 // ─── Constants ────────────────────────────────────────────────────────────────
