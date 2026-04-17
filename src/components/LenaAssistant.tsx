@@ -4,12 +4,13 @@ import { MicOff, Loader2, X, Command } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- Constants & Types ---
-const WAKE_WORD = "hey lena";
+const WAKE_WORD_REGEX = /(hey\s+)?(lina|lena|leena|linaa|leenaa)(\s+stop)?/i;
+const STOP_WORDS = ["stop", "cancel", "shut up", "quiet", "be quiet", "halt"];
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GROQ_MODEL = "llama-3.3-70b-versatile";
 
 interface Action {
-  type: 'NAVIGATE' | 'CLICK' | 'SUMMARIZE' | 'CHAT' | 'GREET';
+  type: 'NAVIGATE' | 'CLICK' | 'SUMMARIZE' | 'CHAT' | 'GREET' | 'STOP';
   payload?: string;
   response?: string;
 }
@@ -31,6 +32,8 @@ export const LenaAssistant: React.FC = () => {
   const isListeningRef = useRef(false);
   const isWakingUp = useRef(false);
   const pipelineTimersRef = useRef<any[]>([]);
+  const lastResultTimestamp = useRef<number>(Date.now());
+  const watchdogTimerRef = useRef<any>(null);
 
   // --- Voice Setup ---
   useEffect(() => {
@@ -62,11 +65,23 @@ export const LenaAssistant: React.FC = () => {
 
   const speak = useCallback((text: string) => {
     if (!window.speechSynthesis) return;
+    
+    // Explicit Stop support
+    if (STOP_WORDS.some(word => text.toLowerCase().includes(word))) {
+      window.speechSynthesis.cancel();
+      pipelineTimersRef.current.forEach(clearTimeout);
+      pipelineTimersRef.current = [];
+      setLenaResponse("Stopped.");
+      return;
+    }
+
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     if (synthesisRef.current) {
       utterance.voice = synthesisRef.current;
     }
+    utterance.voiceURI = 'native';
+    utterance.volume = 1;
     utterance.pitch = 1.0; 
     utterance.rate = 1.0;
     window.speechSynthesis.speak(utterance);
@@ -115,6 +130,13 @@ export const LenaAssistant: React.FC = () => {
         
         Your task is to parse the user's voice command and return a JSON object.
         
+        PHONETIC SIMILARITY RULE:
+        The user's transcript may contain mispronunciations.
+        - "Sumery", "Summari", "Summary" -> SUMMARIZE
+        - "Fine ants", "Fine-ance" -> /finance
+        - "Supply cane" -> /supply-chain
+        - "Hey Lina", "Leena" -> This is you, Lena.
+        
         CRITICAL RULES:
         1. ALWAYS provide a "response" field with a friendly vocal confirmation. Lena MUST speak for every command.
         2. If the user says "initialize", "start", "proceed", or "begin", and there is a relevant button (e.g., "Initialize Platform"), set type to "CLICK" and payload to the exact button name.
@@ -125,10 +147,11 @@ export const LenaAssistant: React.FC = () => {
         - Interaction: "Click the login button", "press start" (type: CLICK)
         - Summarization: "Summarize this page", "what is this about?" (type: SUMMARIZE)
         - General chat/help: "Who are you?", "Help me" (type: CHAT)
+        - Stopping: "Stop", "Be quiet" (type: STOP)
 
         Return JSON ONLY:
         {
-          "type": "NAVIGATE" | "CLICK" | "SUMMARIZE" | "CHAT" | "CLARIFY",
+          "type": "NAVIGATE" | "CLICK" | "SUMMARIZE" | "CHAT" | "CLARIFY" | "STOP",
           "payload": "the path or exact button label or null",
           "response": "What you will say back to the user (MANDATORY)"
         }
@@ -187,6 +210,11 @@ export const LenaAssistant: React.FC = () => {
         const summary = await getSummaryFromGroq(pageContent.substring(0, 5000));
         speak(summary);
         break;
+      case 'STOP':
+        window.speechSynthesis.cancel();
+        pipelineTimersRef.current.forEach(clearTimeout);
+        pipelineTimersRef.current = [];
+        break;
       default:
         break;
     }
@@ -242,12 +270,23 @@ export const LenaAssistant: React.FC = () => {
           }
         }
 
-        const lowerTranscript = (finalTranscript || interimTranscript).toLowerCase();
+        const lowerTranscript = (finalTranscript || interimTranscript).toLowerCase().trim();
+        lastResultTimestamp.current = Date.now();
 
-        if (!isWakingUp.current && lowerTranscript.includes(WAKE_WORD)) {
+        // 1. High Priority STOP Check
+        if (STOP_WORDS.some(word => lowerTranscript === word || lowerTranscript.endsWith(" " + word))) {
+          window.speechSynthesis.cancel();
+          pipelineTimersRef.current.forEach(clearTimeout);
+          pipelineTimersRef.current = [];
+          setLenaResponse("Standing by.");
+          return;
+        }
+
+        // 2. Wake Word Trigger (Robust Regex)
+        if (!isWakingUp.current && WAKE_WORD_REGEX.test(lowerTranscript)) {
           isWakingUp.current = true;
           setIsVisible(true);
-          speak("Hey there! I'm Lena. How can I help you today?");
+          speak("Yes? I'm listening.");
           setTimeout(() => {
             isWakingUp.current = false;
           }, 2000);
@@ -269,14 +308,12 @@ export const LenaAssistant: React.FC = () => {
       };
 
       recognition.onend = () => {
-        // Indestructible Restart: Always try to stay alive if active
+        // Indestructible Restart
         if (isListeningRef.current) {
           setTimeout(() => {
             try {
               recognition.start();
-            } catch (e) {
-              // Ignore if already started
-            }
+            } catch (e) {}
           }, 100);
         }
       };
@@ -284,7 +321,25 @@ export const LenaAssistant: React.FC = () => {
       recognitionRef.current = recognition;
     }
 
-    const startAssistant = () => {
+    // --- Watchdog Mechanism ---
+    const runWatchdog = () => {
+      if (isListeningRef.current) {
+        const now = Date.now();
+        const inactiveTime = now - lastResultTimestamp.current;
+        
+        // If inactive for > 15s, force a restart to clear browser stalls
+        if (inactiveTime > 15000) {
+          console.warn("Lena Watchdog: Recognition stalled. Restarting...");
+          try {
+            recognitionRef.current.stop();
+          } catch (e) {}
+          lastResultTimestamp.current = Date.now();
+        }
+      }
+      watchdogTimerRef.current = setTimeout(runWatchdog, 5000);
+    };
+
+    const startAssistant = async () => {
       const rec = recognitionRef.current;
       if (!rec || isListeningRef.current) return;
 
@@ -293,10 +348,19 @@ export const LenaAssistant: React.FC = () => {
         setIsListening(true);
         isListeningRef.current = true;
         hasGreeted.current = true;
-      } catch (err) {
-        // Silently catch start errors
-      }
+        lastResultTimestamp.current = Date.now();
+        if (!watchdogTimerRef.current) runWatchdog();
+      } catch (err) {}
     };
+
+    // --- Optimistic Auto-Start ---
+    if (navigator.permissions && navigator.permissions.query) {
+      navigator.permissions.query({ name: 'microphone' as any }).then((permissionStatus) => {
+        if (permissionStatus.state === 'granted') {
+          startAssistant();
+        }
+      });
+    }
 
     // First interaction handler
     const handleFirstInteraction = () => {
@@ -311,9 +375,9 @@ export const LenaAssistant: React.FC = () => {
     return () => {
       window.removeEventListener('click', handleFirstInteraction);
       window.removeEventListener('keydown', handleFirstInteraction);
-      // We don't stop the recognition here to keep it alive across light renders
+      if (watchdogTimerRef.current) clearTimeout(watchdogTimerRef.current);
     };
-  }, [isVisible, navigate, speak, isListening]);
+  }, [isVisible, navigate, speak]);
 
   // --- Pipeline Voice Narration ---
   useEffect(() => {
