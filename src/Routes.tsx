@@ -18,6 +18,8 @@ import NuroForge from "./pages/NuroForge";
 import NuroStack from "./pages/NuroStack";
 import ConsolidatedDashboard from "./pages/ConsolidatedDashboard";
 import VotingPage from "./pages/VotingPage";
+import Nexus from "./pages/Nexus";
+import NuroVault from "./pages/NuroVault";
 import MobileVotePage from "./pages/MobileVotePage";
 import { LenaAssistant } from "./components/LenaAssistant";
 
@@ -46,6 +48,8 @@ export const Routes: RouteObject[] = [
         element: <SystemLayout />,
         children: [
           { path: "vision-panel", element: <VisionPanel /> },
+          { path: "nexus", element: <Nexus /> },
+          { path: "nurovault", element: <NuroVault /> },
           { path: "nurostack", element: <NuroStack /> },
           { path: "nuromodels", element: <NuroModels /> },
           { path: "nuroforge", element: <NuroForge /> },
