@@ -36,10 +36,22 @@ export const LenaAssistant: React.FC = () => {
   useEffect(() => {
     const loadVoices = () => {
       const voices = window.speechSynthesis.getVoices();
-      // Try to find a nice female voice
-      const femaleVoice = voices.find(v =>
-        (v.name.includes('Female') || v.name.includes('Google US English') || v.name.includes('Samantha') || v.name.includes('Victoria')) && v.lang.startsWith('en')
-      ) || voices.find(v => v.lang.startsWith('en'));
+      // Try to find a nice female voice - Expanded list for better cross-browser compatibility
+      const femaleVoice = voices.find(v => {
+        const name = v.name;
+        return (
+          name.includes('Female') || 
+          name.includes('Google US English') || 
+          name.includes('Samantha') || 
+          name.includes('Victoria') ||
+          name.includes('Aria') ||
+          name.includes('Zira') ||
+          name.includes('Siri') ||
+          name.includes('Karen') ||
+          name.includes('Catherine') ||
+          name.includes('Hazel')
+        ) && v.lang.startsWith('en');
+      }) || voices.find(v => v.lang.startsWith('en'));
 
       synthesisRef.current = femaleVoice || null;
     };
@@ -55,7 +67,7 @@ export const LenaAssistant: React.FC = () => {
     if (synthesisRef.current) {
       utterance.voice = synthesisRef.current;
     }
-    utterance.pitch = 1.1; // Slightly higher pitch for female-like quality
+    utterance.pitch = 1.2; // Optimized for feminine quality
     utterance.rate = 1.0;
     window.speechSynthesis.speak(utterance);
     setLenaResponse(text);
