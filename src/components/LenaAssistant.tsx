@@ -28,6 +28,7 @@ export const LenaAssistant: React.FC = () => {
 
   const recognitionRef = useRef<any>(null);
   const synthesisRef = useRef<SpeechSynthesisVoice | null>(null);
+  const isListeningRef = useRef(false);
   const isWakingUp = useRef(false);
   const pipelineTimersRef = useRef<any[]>([]);
 
@@ -250,17 +251,21 @@ export const LenaAssistant: React.FC = () => {
         console.error("Recognition Error:", event.error);
         if (event.error === 'not-allowed') {
           setError("Microphone access denied.");
+          isListeningRef.current = false;
+          setIsListening(false);
         }
       };
 
       recognition.onend = () => {
-        // Restart only if we are supposed to be listening
-        if (isListening) {
-          try {
-            recognition.start();
-          } catch (e) {
-            // Ignore concurrent start errors
-          }
+        // Indestructible Restart: Always try to stay alive if active
+        if (isListeningRef.current) {
+          setTimeout(() => {
+            try {
+              recognition.start();
+            } catch (e) {
+              // Ignore if already started
+            }
+          }, 100);
         }
       };
 
@@ -269,17 +274,18 @@ export const LenaAssistant: React.FC = () => {
 
     const startAssistant = () => {
       const rec = recognitionRef.current;
-      if (!rec || isListening) return;
+      if (!rec || isListeningRef.current) return;
 
       try {
         rec.start();
         setIsListening(true);
+        isListeningRef.current = true;
         if (!hasGreeted.current) {
           speak("Welcome to the LENA Platform. All systems are operational. I am Lena, your neural assistant. How can I help you today?");
           hasGreeted.current = true;
         }
       } catch (err) {
-        // Silently catch start errors (common if called too early)
+        // Silently catch start errors
       }
     };
 
