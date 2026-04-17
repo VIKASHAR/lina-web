@@ -80,7 +80,6 @@ export const LenaAssistant: React.FC = () => {
     if (synthesisRef.current) {
       utterance.voice = synthesisRef.current;
     }
-    utterance.voiceURI = 'native';
     utterance.volume = 1;
     utterance.pitch = 1.0; 
     utterance.rate = 1.0;
@@ -439,8 +438,13 @@ export const LenaAssistant: React.FC = () => {
             {/* Header */}
             <div className="bg-primary/10 p-4 flex items-center justify-between border-b border-primary/10">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <div className={`w-2 h-2 rounded-full ${isListening ? 'bg-primary animate-pulse' : 'bg-muted'}`} />
                 <span className="font-semibold text-sm tracking-tight">LENA Assistant</span>
+                {isListening && (
+                  <span className="text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded font-bold uppercase tracking-widest animate-pulse">
+                    Live
+                  </span>
+                )}
               </div>
               <button
                 onClick={() => setIsVisible(false)}
