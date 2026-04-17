@@ -67,7 +67,7 @@ export const LenaAssistant: React.FC = () => {
     if (synthesisRef.current) {
       utterance.voice = synthesisRef.current;
     }
-    utterance.pitch = 1.2; // Optimized for feminine quality
+    utterance.pitch = 1.0; 
     utterance.rate = 1.0;
     window.speechSynthesis.speak(utterance);
     setLenaResponse(text);
