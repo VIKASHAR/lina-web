@@ -207,87 +207,96 @@ export const LenaAssistant: React.FC = () => {
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      console.error("Speech Recognition not supported");
+      console.warn("Speech Recognition not supported in this browser");
       return;
     }
 
-    const recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = 'en-US';
+    if (!recognitionRef.current) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
 
-    recognition.onresult = (event: any) => {
-      let interimTranscript = '';
-      let finalTranscript = '';
+      recognition.onresult = (event: any) => {
+        let interimTranscript = '';
+        let finalTranscript = '';
 
-      for (let i = event.resultIndex; i < event.results.length; ++i) {
-        if (event.results[i].isFinal) {
-          finalTranscript += event.results[i][0].transcript;
-        } else {
-          interimTranscript += event.results[i][0].transcript;
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          } else {
+            interimTranscript += event.results[i][0].transcript;
+          }
         }
-      }
 
-      const lowerTranscript = (finalTranscript || interimTranscript).toLowerCase();
+        const lowerTranscript = (finalTranscript || interimTranscript).toLowerCase();
 
-      if (!isWakingUp.current && lowerTranscript.includes(WAKE_WORD)) {
-        isWakingUp.current = true;
-        setIsVisible(true);
-        speak("Hey there! I'm Lena. How can I help you today?");
-        // Small delay to prevent it from picking up its own name as a command
-        setTimeout(() => {
-          isWakingUp.current = false;
-        }, 2000);
-      } else if (isVisible && finalTranscript && !isWakingUp.current) {
-        processCommand(finalTranscript);
-      }
-    };
+        if (!isWakingUp.current && lowerTranscript.includes(WAKE_WORD)) {
+          isWakingUp.current = true;
+          setIsVisible(true);
+          speak("Hey there! I'm Lena. How can I help you today?");
+          setTimeout(() => {
+            isWakingUp.current = false;
+          }, 2000);
+        } else if (isVisible && finalTranscript && !isWakingUp.current) {
+          processCommand(finalTranscript);
+        }
+      };
 
-    recognition.onerror = (event: any) => {
-      console.error("Recognition Error:", event.error);
-      if (event.error === 'not-allowed') {
-        setError("Microphone access denied.");
-      }
-    };
+      recognition.onerror = (event: any) => {
+        // Silently handle 'aborted' as it's often a harmless browser behavior
+        if (event.error === 'aborted') return;
+        
+        console.error("Recognition Error:", event.error);
+        if (event.error === 'not-allowed') {
+          setError("Microphone access denied.");
+        }
+      };
 
-    recognition.onend = () => {
-      if (isListening) recognition.start();
-    };
+      recognition.onend = () => {
+        // Restart only if we are supposed to be listening
+        if (isListening) {
+          try {
+            recognition.start();
+          } catch (e) {
+            // Ignore concurrent start errors
+          }
+        }
+      };
+
+      recognitionRef.current = recognition;
+    }
 
     const startAssistant = () => {
+      const rec = recognitionRef.current;
+      if (!rec || isListening) return;
+
       try {
-        recognition.start();
+        rec.start();
         setIsListening(true);
         if (!hasGreeted.current) {
           speak("Welcome to the LENA Platform. All systems are operational. I am Lena, your neural assistant. How can I help you today?");
           hasGreeted.current = true;
         }
       } catch (err) {
-        console.warn("Auto-start failed, waiting for user interaction:", err);
+        // Silently catch start errors (common if called too early)
       }
     };
 
-    recognitionRef.current = recognition;
-
-    // Auto-start attempt
-    startAssistant();
-
-    // Fallback: Start on first interaction if blocked by browser
+    // First interaction handler
     const handleFirstInteraction = () => {
-      if (!isListening) {
-        startAssistant();
-        window.removeEventListener('click', handleFirstInteraction);
-        window.removeEventListener('keydown', handleFirstInteraction);
-      }
+      startAssistant();
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
     };
 
     window.addEventListener('click', handleFirstInteraction);
     window.addEventListener('keydown', handleFirstInteraction);
 
     return () => {
-      recognition.stop();
       window.removeEventListener('click', handleFirstInteraction);
       window.removeEventListener('keydown', handleFirstInteraction);
+      // We don't stop the recognition here to keep it alive across light renders
     };
   }, [isVisible, navigate, speak, isListening]);
 
