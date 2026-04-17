@@ -280,10 +280,7 @@ export const LenaAssistant: React.FC = () => {
         rec.start();
         setIsListening(true);
         isListeningRef.current = true;
-        if (!hasGreeted.current) {
-          speak("Welcome to the LENA Platform. All systems are operational. I am Lena, your neural assistant. How can I help you today?");
-          hasGreeted.current = true;
-        }
+        hasGreeted.current = true;
       } catch (err) {
         // Silently catch start errors
       }
